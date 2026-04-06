@@ -1,0 +1,49 @@
+# Claude AI 配置 (防污染)
+.claude/
+CLAUDE.md
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# PyTorch / CUDA
+*.pt
+*.pth
+*.bin
+*.onnx
+
+# 模型权重 (大型文件)
+checkpoints/
+
+
+# 数据目录
+files/
+data_win/
+data/raw/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# 日志与构建产物
+*.log
+gsplat_build.log
+test_gsplat_build/
+
+# 大文件 (超过 GitHub 100MB 限制)
+gsplat/
+*.bag
+
+# 大文件 (超过 GitHub 100MB 限制)
+gsplat/AGZ_subset/
+*.bag
+
