@@ -17,7 +17,6 @@ from collections import defaultdict
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple, Union
-import open3d as o3d
 import imageio
 import numpy as np
 import torch
@@ -242,8 +241,14 @@ class Config:
     prune_depth_err_ratio: float = 0.1
     # Minimum opacity contribution threshold
     prune_min_opacity: float = 0.01
-    # Save pruning visualization (before/after ply files)
-    prune_save_ply: bool = True
+    # Save pruning visualization: standard 3DGS ply (before/after)
+    prune_save_ply: bool = False
+    # Save RGB-colored point cloud for CloudCompare visualization
+    prune_save_rgb_ply: bool = False
+    # Save eval render images to disk (GT + render side-by-side PNG)
+    save_eval_images: bool = False
+    # Disable tensorboard scalar logging (speeds up training on cloud)
+    disable_tb: bool = False
 
     def adjust_steps(self, factor: float):
         self.eval_steps = [int(i * factor) for i in self.eval_steps]
@@ -703,6 +708,36 @@ def structure_aware_prune(
     return new_splats, new_optimizers, stats
 
 
+def _save_rgb_ply(path: str, means: torch.Tensor, sh0: torch.Tensor) -> None:
+    """Save Gaussian centers as a colored point cloud (CloudCompare compatible).
+    Converts SH DC component to RGB. No external dependencies beyond numpy/struct.
+    sh0 shape: [N, 1, 3]
+    """
+    import struct as _struct
+    pts = means.detach().cpu().numpy().astype("float32")
+    rgb = (sh0[:, 0, :].detach().cpu().numpy() * 0.28209479177387814 + 0.5)
+    rgb = (rgb.clip(0.0, 1.0) * 255).astype("uint8")
+    n = len(pts)
+    header = (
+        f"ply\nformat binary_little_endian 1.0\n"
+        f"element vertex {n}\n"
+        f"property float x\nproperty float y\nproperty float z\n"
+        f"property uchar red\nproperty uchar green\nproperty uchar blue\n"
+        f"end_header\n"
+    ).encode("ascii")
+    with open(path, "wb") as f:
+        f.write(header)
+        buf = bytearray(n * 15)
+        for i in range(n):
+            offset = i * 15
+            _struct.pack_into("<fff", buf, offset, pts[i, 0], pts[i, 1], pts[i, 2])
+            buf[offset + 12] = int(rgb[i, 0])
+            buf[offset + 13] = int(rgb[i, 1])
+            buf[offset + 14] = int(rgb[i, 2])
+        f.write(buf)
+    print(f"[Pruning] RGB point cloud saved: {path}")
+
+
 class Runner:
     """Engine for training and testing."""
 
@@ -1146,7 +1181,7 @@ class Runner:
             #         (canvas * 255).astype(np.uint8),
             #     )
 
-            if world_rank == 0 and cfg.tb_every > 0 and step % cfg.tb_every == 0:
+            if world_rank == 0 and cfg.tb_every > 0 and step % cfg.tb_every == 0 and not cfg.disable_tb:
                 mem = torch.cuda.max_memory_allocated() / 1024 ** 3
                 self.writer.add_scalar("train/loss", loss.item(), step)
                 self.writer.add_scalar("train/l1loss", l1loss.item(), step)
@@ -1323,18 +1358,11 @@ class Runner:
                         format="ply",
                         save_to=f"{self.ply_dir}/point_cloud_before_prune_{step}.ply",
                     )
-                    # sh0 shape: [N, 1, 3]，取 DC 分量转 RGB
-                    rgb_vis = (sh0[:, 0, :] * 0.2820947917 + 0.5).clamp(0, 1)  # SH DC → RGB
-                    rgb_np = rgb_vis.detach().cpu().numpy()
-                    pts_np = self.splats["means"].detach().cpu().numpy()
-
-                    pcd = o3d.geometry.PointCloud()
-                    pcd.points = o3d.utility.Vector3dVector(pts_np)
-                    pcd.colors = o3d.utility.Vector3dVector(rgb_np)
-                    o3d.io.write_point_cloud(
-                        f"{self.ply_dir}/point_cloud_after_prune_{step}_rgb.ply",
-                        pcd
-                    )
+                    if cfg.prune_save_rgb_ply:
+                        _save_rgb_ply(
+                            f"{self.ply_dir}/point_cloud_before_prune_{step}_rgb.ply",
+                            self.splats["means"], sh0,
+                        )
 
                 # Execute pruning
                 self.splats, self.optimizers, prune_stats = structure_aware_prune(
@@ -1402,18 +1430,11 @@ class Runner:
                         format="ply",
                         save_to=f"{self.ply_dir}/point_cloud_after_prune_{step}.ply",
                     )
-                    # sh0 shape: [N, 1, 3]，取 DC 分量转 RGB
-                    rgb_vis = (sh0[:, 0, :] * 0.2820947917 + 0.5).clamp(0, 1)  # SH DC → RGB
-                    rgb_np = rgb_vis.detach().cpu().numpy()
-                    pts_np = self.splats["means"].detach().cpu().numpy()
-
-                    pcd = o3d.geometry.PointCloud()
-                    pcd.points = o3d.utility.Vector3dVector(pts_np)
-                    pcd.colors = o3d.utility.Vector3dVector(rgb_np)
-                    o3d.io.write_point_cloud(
-                        f"{self.ply_dir}/point_cloud_before_prune_{step}_rgb.ply",
-                        pcd
-                    )
+                    if cfg.prune_save_rgb_ply:
+                        _save_rgb_ply(
+                            f"{self.ply_dir}/point_cloud_after_prune_{step}_rgb.ply",
+                            self.splats["means"], sh0,
+                        )
 
             # eval the full set
             if step in [i - 1 for i in cfg.eval_steps]:
@@ -1477,13 +1498,14 @@ class Runner:
             canvas_list = [pixels, colors]
 
             if world_rank == 0:
-                # write images
-                canvas = torch.cat(canvas_list, dim=2).squeeze(0).cpu().numpy()
-                canvas = (canvas * 255).astype(np.uint8)
-                imageio.imwrite(
-                    f"{self.render_dir}/{stage}_step{step}_{i:04d}.png",
-                    canvas,
-                )
+                # write images (optional, gated by save_eval_images)
+                if cfg.save_eval_images:
+                    canvas = torch.cat(canvas_list, dim=2).squeeze(0).cpu().numpy()
+                    canvas = (canvas * 255).astype(np.uint8)
+                    imageio.imwrite(
+                        f"{self.render_dir}/{stage}_step{step}_{i:04d}.png",
+                        canvas,
+                    )
 
                 pixels_p = pixels.permute(0, 3, 1, 2)  # [1, 3, H, W]
                 colors_p = colors.permute(0, 3, 1, 2)  # [1, 3, H, W]

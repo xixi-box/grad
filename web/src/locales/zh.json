@@ -1,0 +1,281 @@
+{
+  "nav": {
+    "features": "功能特性",
+    "workflow": "工作流程",
+    "demo": "效果演示",
+    "benchmark": "性能测试",
+    "faq": "常见问题",
+    "quickstart": "快速开始",
+    "github": "GitHub"
+  },
+  "hero": {
+    "badge": "开源 3D 重建工具链",
+    "title": "几分钟内将图像转换为",
+    "titleHighlight": "3D 高斯",
+    "titleEnd": "泼溅渲染",
+    "subtitle": "从 DUSt3R 深度估计到实时 3D 渲染的完整工具链，无需相机标定。",
+    "getStarted": "快速开始",
+    "viewGithub": "查看 GitHub",
+    "stats": {
+      "images": "输入图像",
+      "time": "处理时间",
+      "render": "实时渲染"
+    }
+  },
+  "features": {
+    "title": "强大功能",
+    "subtitle": "将图像转换为精美 3D 场景所需的一切",
+    "items": {
+      "depth": {
+        "title": "深度估计",
+        "description": "使用最先进的 DUSt3R 模型自动从图像估计深度图，无需标定或深度传感器。"
+      },
+      "pose": {
+        "title": "相机位姿",
+        "description": "通过全局对齐优化实现多视图一致的相机位姿估计，自动恢复内参和外参。"
+      },
+      "colmap": {
+        "title": "COLMAP 导出",
+        "description": "标准 COLMAP 格式导出（cameras.bin、images.bin、points3D.bin），兼容所有主流 3DGS/NeRF 框架。"
+      },
+      "render": {
+        "title": "实时渲染",
+        "description": "基于 gsplat 的实时渲染，内置剪枝优化，在消费级 GPU 上实现 60+ FPS。"
+      },
+      "quality": {
+        "title": "质量评估",
+        "description": "内置质量评估指标，包括深度一致性、点云密度和重建完整度分析。"
+      },
+      "cross": {
+        "title": "跨平台支持",
+        "description": "支持 Windows、Linux 和 macOS，通过 CUDA 和 ROCm 后端支持 NVIDIA 和 AMD GPU。"
+      }
+    }
+  },
+  "workflow": {
+    "title": "工作原理",
+    "subtitle": "只需几步，从图像到交互式 3D 场景",
+    "steps": {
+      "input": {
+        "label": "输入图像",
+        "desc": "24+ 张图像"
+      },
+      "dust3r": {
+        "label": "DUSt3R 推理",
+        "desc": "深度与位姿估计"
+      },
+      "align": {
+        "label": "全局对齐",
+        "desc": "多视图一致性"
+      },
+      "colmap": {
+        "label": "COLMAP 导出",
+        "desc": "标准格式"
+      },
+      "train": {
+        "label": "3DGS 训练",
+        "desc": "带剪枝优化"
+      },
+      "render": {
+        "label": "实时查看",
+        "desc": "交互式查看器"
+      }
+    },
+    "details": {
+      "title": "流程详解",
+      "step1": {
+        "title": "1. 图像输入",
+        "desc": "从不同视点加载 24 张以上图像，支持 JPG、PNG 等常见格式，自动调整至最优分辨率。"
+      },
+      "step2": {
+        "title": "2. DUSt3R 处理",
+        "desc": "对图像对运行 DUSt3R 推理，估计相对深度图和相机位姿，使用 ViT-Large 骨干网络获得最佳质量。"
+      },
+      "step3": {
+        "title": "3. 全局对齐",
+        "desc": "联合优化所有视图以实现一致的 3D 重建，处理尺度模糊问题并生成度量点云。"
+      },
+      "step4": {
+        "title": "4. COLMAP 导出",
+        "desc": "以 COLMAP 格式导出相机、图像和 3D 点，可直接用于下游 3DGS 训练或其他应用。"
+      },
+      "step5": {
+        "title": "5. 3DGS 训练",
+        "desc": "训练 3D 高斯泼溅模型并内置剪枝，通过自适应密度控制用更少的高斯实现高质量渲染。"
+      },
+      "step6": {
+        "title": "6. 交互式查看",
+        "desc": "使用 gsplat 查看器进行实时渲染，以 60+ FPS 自由浏览重建的场景。"
+      }
+    }
+  },
+  "demo": {
+    "title": "效果演示",
+    "subtitle": "从输入图像到精美 3D 重建",
+    "tabs": {
+      "input": "输入图像",
+      "pointcloud": "点云重建",
+      "render": "渲染结果",
+      "comparison": "效果对比"
+    },
+    "input": {
+      "title": "24 张输入图像",
+      "desc": "从不同视点拍摄的图像"
+    },
+    "pointcloud": {
+      "title": "3D 点云",
+      "desc": "从 DUSt3R 深度图重建"
+    },
+    "render": {
+      "title": "渲染结果",
+      "desc": "实时 3DGS 渲染"
+    },
+    "comparison": {
+      "title": "前后对比",
+      "input": "输入",
+      "output": "输出"
+    }
+  },
+  "benchmark": {
+    "title": "性能测试",
+    "subtitle": "在 RTX 5060 笔记本 GPU 上测试，24 张 512px 分辨率图像",
+    "metrics": {
+      "inference": {
+        "label": "DUSt3R 推理",
+        "value": "~2 分钟",
+        "desc": "RTX 5060 处理 24 张图"
+      },
+      "alignment": {
+        "label": "全局对齐",
+        "value": "~30 秒",
+        "desc": "多视图优化"
+      },
+      "training": {
+        "label": "3DGS 训练",
+        "value": "~5 分钟",
+        "desc": "3000 次迭代带剪枝"
+      },
+      "rendering": {
+        "label": "渲染速度",
+        "value": "60+ FPS",
+        "desc": "实时查看器"
+      },
+      "memory": {
+        "label": "显存占用",
+        "value": "~4 GB",
+        "desc": "峰值使用量"
+      },
+      "quality": {
+        "label": "输出质量",
+        "value": "PSNR 28+",
+        "desc": "测试场景平均"
+      }
+    },
+    "compare": {
+      "title": "与其他方法对比",
+      "headers": {
+        "method": "方法",
+        "time": "耗时",
+        "calibration": "需要标定",
+        "quality": "质量"
+      },
+      "rows": {
+        "colmap": {
+          "name": "COLMAP SfM",
+          "time": "~30 分钟",
+          "calibration": "否",
+          "quality": "高"
+        },
+        "nerf": {
+          "name": "NeRF 原版",
+          "time": "~24 小时",
+          "calibration": "是",
+          "quality": "中"
+        },
+        "instant": {
+          "name": "Instant-NGP",
+          "time": "~10 分钟",
+          "calibration": "是",
+          "quality": "高"
+        },
+        "ours": {
+          "name": "本方案 (DUSt3R+3DGS)",
+          "time": "~7 分钟",
+          "calibration": "否",
+          "quality": "高"
+        }
+      }
+    }
+  },
+  "faq": {
+    "title": "常见问题",
+    "items": {
+      "q1": {
+        "q": "什么类型的场景效果最好？",
+        "a": "该工具链最适合从多个视点拍摄的纹理丰富场景。避免无纹理表面（白墙、玻璃）和高反射物体。室内场景、户外风景和纹理细节丰富的物体效果最好。"
+      },
+      "q2": {
+        "q": "需要多少张图像？",
+        "a": "建议至少 24 张图像以获得良好质量。更多图像通常会提高重建质量，尤其是复杂场景。相邻视图之间应有良好的重叠（至少 30-50% 重叠）。"
+      },
+      "q3": {
+        "q": "需要什么 GPU？",
+        "a": "推荐支持 CUDA 的 NVIDIA GPU。RTX 30/40/50 系列效果很好。512px 分辨率至少需要 4GB 显存，更高分辨率建议 8GB+。Linux 上通过 ROCm 支持 AMD GPU。"
+      },
+      "q4": {
+        "q": "为什么 RTX 50 系列需要从源码编译 gsplat？",
+        "a": "预编译的 gsplat wheel 包尚未支持 sm_120 (Blackwell) 架构。只需从源码编译即可：pip install git+https://github.com/nerfstudio-project/gsplat.git --no-build-isolation"
+      },
+      "q5": {
+        "q": "可以用于商业项目吗？",
+        "a": "DUSt3R 采用 CC BY-NC-SA 4.0 许可，仅限非商业使用。对于商业应用，请查看原始 DUSt3R 许可证并考虑联系 NAVER 获取商业许可。"
+      },
+      "q6": {
+        "q": "质量与 COLMAP 相比如何？",
+        "a": "对于图像覆盖良好的场景，质量与 COLMAP 相当。主要优势是速度——我们的工具链几分钟完成，而 COLMAP SfM 需要数小时。对于挑战性场景（低纹理、稀疏视图），COLMAP 可能仍产生更好的结果。"
+      }
+    }
+  },
+  "quickstart": {
+    "title": "快速开始",
+    "subtitle": "几分钟内即可上手",
+    "steps": {
+      "clone": {
+        "title": "1. 克隆仓库",
+        "code": "git clone https://github.com/xixi-box/grad.git\ncd grad"
+      },
+      "install": {
+        "title": "2. 安装依赖",
+        "code": "# 安装 PyTorch CUDA 版本\npip install torch torchvision --index-url https://download.pytorch.org/whl/cu128\n\n# 安装其他依赖\npip install -r requirements.txt\n\n# 构建 DUSt3R CUDA 扩展\ncd dust3r/croco/models/curope\npython setup.py build_ext --inplace\ncd ../../../..\n\n# 安装 gsplat（从源码编译）\npip install git+https://github.com/nerfstudio-project/gsplat.git --no-build-isolation"
+      },
+      "download": {
+        "title": "3. 下载模型权重",
+        "code": "mkdir -p checkpoints\nwget https://download.europe.naverlabs.com/ComputerVision/DUSt3R/DUSt3R_ViTLarge_BaseDecoder_512_dpt.pth \\\n  -O checkpoints/DUSt3R_ViTLarge_BaseDecoder_512_dpt.pth"
+      },
+      "run": {
+        "title": "4. 运行管道",
+        "code": "python dust3r_to_3dgs_verified_fixed.py \\\\\n    --input ./data/input/ \\\\\n    --output ./data/raw/ \\\\\n    --coord_system original \\\\\n    --save_depth \\\\\n    --evaluate"
+      },
+      "train": {
+        "title": "5. 训练 3DGS（可选）",
+        "code": "python simple_trainer_prune_v2.py \\\\\n    --data_dir ./data/raw \\\\\n    --exp_name my_scene \\\\\n    --tau 0.03"
+      }
+    },
+    "help": {
+      "title": "需要帮助？",
+      "desc": "查看 GitHub 上的完整文档，了解详细说明、故障排除指南和 API 参考。",
+      "link": "查看完整文档 →"
+    }
+  },
+  "footer": {
+    "links": {
+      "github": "GitHub",
+      "docs": "文档",
+      "issues": "问题反馈",
+      "discussions": "讨论区"
+    },
+    "madeWith": "由",
+    "by": "制作",
+    "license": "© 2024 MIT 许可证。DUSt3R 采用 CC BY-NC-SA 4.0 许可。"
+  }
+}

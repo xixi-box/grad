@@ -1,0 +1,281 @@
+{
+  "nav": {
+    "features": "Features",
+    "workflow": "Workflow",
+    "demo": "Demo",
+    "benchmark": "Benchmark",
+    "faq": "FAQ",
+    "quickstart": "Quick Start",
+    "github": "GitHub"
+  },
+  "hero": {
+    "badge": "Open Source 3D Reconstruction Pipeline",
+    "title": "Transform Images to",
+    "titleHighlight": "3D Gaussian",
+    "titleEnd": "Splatting in Minutes",
+    "subtitle": "A complete pipeline from DUSt3R depth estimation to real-time 3D rendering. No camera calibration required.",
+    "getStarted": "Get Started",
+    "viewGithub": "View on GitHub",
+    "stats": {
+      "images": "Input Images",
+      "time": "Processing",
+      "render": "Rendering"
+    }
+  },
+  "features": {
+    "title": "Powerful Features",
+    "subtitle": "Everything you need to transform images into stunning 3D scenes",
+    "items": {
+      "depth": {
+        "title": "Depth Estimation",
+        "description": "Automatically estimate depth maps from images with state-of-the-art DUSt3R model. No calibration or depth sensors required."
+      },
+      "pose": {
+        "title": "Camera Pose",
+        "description": "Multi-view consistent camera pose estimation through global alignment optimization. Recovers both intrinsic and extrinsic parameters."
+      },
+      "colmap": {
+        "title": "COLMAP Export",
+        "description": "Standard COLMAP format export (cameras.bin, images.bin, points3D.bin), compatible with all major 3DGS/NeRF frameworks."
+      },
+      "render": {
+        "title": "Real-time Rendering",
+        "description": "Real-time rendering powered by gsplat with built-in pruning optimization. Achieve 60+ FPS on consumer GPUs."
+      },
+      "quality": {
+        "title": "Quality Evaluation",
+        "description": "Built-in quality assessment metrics including depth consistency, point cloud density, and reconstruction completeness."
+      },
+      "cross": {
+        "title": "Cross Platform",
+        "description": "Works on Windows, Linux, and macOS. Supports both NVIDIA and AMD GPUs through CUDA and ROCm backends."
+      }
+    }
+  },
+  "workflow": {
+    "title": "How It Works",
+    "subtitle": "From images to interactive 3D scenes in just a few steps",
+    "steps": {
+      "input": {
+        "label": "Input Images",
+        "desc": "24+ images"
+      },
+      "dust3r": {
+        "label": "DUSt3R Inference",
+        "desc": "Depth & pose estimation"
+      },
+      "align": {
+        "label": "Global Alignment",
+        "desc": "Multi-view consistency"
+      },
+      "colmap": {
+        "label": "COLMAP Export",
+        "desc": "Standard format"
+      },
+      "train": {
+        "label": "3DGS Training",
+        "desc": "With pruning"
+      },
+      "render": {
+        "label": "Real-time View",
+        "desc": "Interactive viewer"
+      }
+    },
+    "details": {
+      "title": "Pipeline Details",
+      "step1": {
+        "title": "1. Image Input",
+        "desc": "Load 24+ images from different viewpoints. Support JPG, PNG, and other common formats. Images are automatically resized to optimal resolution."
+      },
+      "step2": {
+        "title": "2. DUSt3R Processing",
+        "desc": "Run DUSt3R inference on image pairs to estimate relative depth maps and camera poses. Uses ViT-Large backbone for best quality."
+      },
+      "step3": {
+        "title": "3. Global Alignment",
+        "desc": "Optimize all views jointly for consistent 3D reconstruction. Handles scale ambiguity and produces metric point cloud."
+      },
+      "step4": {
+        "title": "4. COLMAP Export",
+        "desc": "Export cameras, images, and 3D points in COLMAP format. Ready for downstream 3DGS training or other applications."
+      },
+      "step5": {
+        "title": "5. 3DGS Training",
+        "desc": "Train 3D Gaussian Splatting model with built-in pruning. Achieve high quality with fewer Gaussians through adaptive density control."
+      },
+      "step6": {
+        "title": "6. Interactive Viewer",
+        "desc": "Real-time rendering with gsplat viewer. Navigate freely through the reconstructed scene at 60+ FPS."
+      }
+    }
+  },
+  "demo": {
+    "title": "See It in Action",
+    "subtitle": "From input images to stunning 3D reconstruction",
+    "tabs": {
+      "input": "Input Images",
+      "pointcloud": "Point Cloud",
+      "render": "Render Result",
+      "comparison": "Comparison"
+    },
+    "input": {
+      "title": "24 Input Images",
+      "desc": "Images captured from different viewpoints"
+    },
+    "pointcloud": {
+      "title": "3D Point Cloud",
+      "desc": "Reconstructed from DUSt3R depth maps"
+    },
+    "render": {
+      "title": "Rendered Result",
+      "desc": "Real-time 3DGS rendering"
+    },
+    "comparison": {
+      "title": "Before vs After",
+      "input": "Input",
+      "output": "Output"
+    }
+  },
+  "benchmark": {
+    "title": "Performance Benchmark",
+    "subtitle": "Tested on RTX 5060 Laptop GPU with 24 images at 512px resolution",
+    "metrics": {
+      "inference": {
+        "label": "DUSt3R Inference",
+        "value": "~2 min",
+        "desc": "24 images on RTX 5060"
+      },
+      "alignment": {
+        "label": "Global Alignment",
+        "value": "~30 sec",
+        "desc": "Multi-view optimization"
+      },
+      "training": {
+        "label": "3DGS Training",
+        "value": "~5 min",
+        "desc": "3000 iterations with pruning"
+      },
+      "rendering": {
+        "label": "Rendering Speed",
+        "value": "60+ FPS",
+        "desc": "Real-time viewer"
+      },
+      "memory": {
+        "label": "GPU Memory",
+        "value": "~4 GB",
+        "desc": "Peak usage"
+      },
+      "quality": {
+        "label": "Output Quality",
+        "value": "PSNR 28+",
+        "desc": "Average on test scenes"
+      }
+    },
+    "compare": {
+      "title": "Comparison with Other Methods",
+      "headers": {
+        "method": "Method",
+        "time": "Time",
+        "calibration": "Calibration Required",
+        "quality": "Quality"
+      },
+      "rows": {
+        "colmap": {
+          "name": "COLMAP SfM",
+          "time": "~30 min",
+          "calibration": "No",
+          "quality": "High"
+        },
+        "nerf": {
+          "name": "NeRF Original",
+          "time": "~24 hours",
+          "calibration": "Yes",
+          "quality": "Medium"
+        },
+        "instant": {
+          "name": "Instant-NGP",
+          "time": "~10 min",
+          "calibration": "Yes",
+          "quality": "High"
+        },
+        "ours": {
+          "name": "Ours (DUSt3R+3DGS)",
+          "time": "~7 min",
+          "calibration": "No",
+          "quality": "High"
+        }
+      }
+    }
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "items": {
+      "q1": {
+        "q": "What types of scenes work best?",
+        "a": "The pipeline works best with textured scenes captured from multiple viewpoints. Avoid texture-less surfaces (white walls, glass) and highly reflective objects. Indoor scenes, outdoor landscapes, and objects with good texture detail produce the best results."
+      },
+      "q2": {
+        "q": "How many images do I need?",
+        "a": "Minimum 24 images are recommended for good quality. More images generally improve reconstruction quality, especially for complex scenes. Images should have good overlap between adjacent views (at least 30-50% overlap)."
+      },
+      "q3": {
+        "q": "What GPU do I need?",
+        "a": "NVIDIA GPU with CUDA support is recommended. RTX 30/40/50 series work great. Minimum 4GB VRAM for 512px resolution, 8GB+ recommended for higher resolutions. AMD GPUs are supported through ROCm on Linux."
+      },
+      "q4": {
+        "q": "Why RTX 50 series requires building gsplat from source?",
+        "a": "Pre-built gsplat wheels don't support sm_120 (Blackwell) architecture yet. Simply build from source with: pip install git+https://github.com/nerfstudio-project/gsplat.git --no-build-isolation"
+      },
+      "q5": {
+        "q": "Can I use this for commercial projects?",
+        "a": "DUSt3R is licensed under CC BY-NC-SA 4.0 for non-commercial use. For commercial applications, please check the original DUSt3R license and consider contacting NAVER for commercial licensing options."
+      },
+      "q6": {
+        "q": "How does quality compare to COLMAP?",
+        "a": "For scenes with good image coverage, the quality is comparable to COLMAP. The main advantage is speed - our pipeline completes in minutes vs hours for COLMAP SfM. For challenging scenes (low texture, sparse views), COLMAP may still produce better results."
+      }
+    }
+  },
+  "quickstart": {
+    "title": "Quick Start",
+    "subtitle": "Get up and running in minutes",
+    "steps": {
+      "clone": {
+        "title": "1. Clone Repository",
+        "code": "git clone https://github.com/xixi-box/grad.git\ncd grad"
+      },
+      "install": {
+        "title": "2. Install Dependencies",
+        "code": "# Install PyTorch with CUDA\npip install torch torchvision --index-url https://download.pytorch.org/whl/cu128\n\n# Install other dependencies\npip install -r requirements.txt\n\n# Build DUSt3R CUDA extension\ncd dust3r/croco/models/curope\npython setup.py build_ext --inplace\ncd ../../../..\n\n# Install gsplat (build from source)\npip install git+https://github.com/nerfstudio-project/gsplat.git --no-build-isolation"
+      },
+      "download": {
+        "title": "3. Download Model Weights",
+        "code": "mkdir -p checkpoints\nwget https://download.europe.naverlabs.com/ComputerVision/DUSt3R/DUSt3R_ViTLarge_BaseDecoder_512_dpt.pth \\\n  -O checkpoints/DUSt3R_ViTLarge_BaseDecoder_512_dpt.pth"
+      },
+      "run": {
+        "title": "4. Run Pipeline",
+        "code": "python dust3r_to_3dgs_verified_fixed.py \\\\\n    --input ./data/input/ \\\\\n    --output ./data/raw/ \\\\\n    --coord_system original \\\\\n    --save_depth \\\\\n    --evaluate"
+      },
+      "train": {
+        "title": "5. Train 3DGS (Optional)",
+        "code": "python simple_trainer_prune_v2.py \\\\\n    --data_dir ./data/raw \\\\\n    --exp_name my_scene \\\\\n    --tau 0.03"
+      }
+    },
+    "help": {
+      "title": "Need Help?",
+      "desc": "Check out the full documentation on GitHub for detailed instructions, troubleshooting guides, and API reference.",
+      "link": "View Full Documentation →"
+    }
+  },
+  "footer": {
+    "links": {
+      "github": "GitHub",
+      "docs": "Documentation",
+      "issues": "Issues",
+      "discussions": "Discussions"
+    },
+    "madeWith": "Made with",
+    "by": "by",
+    "license": "© 2024 MIT License. DUSt3R is CC BY-NC-SA 4.0."
+  }
+}

@@ -27,7 +27,7 @@ checkpoints/
 files/
 data_win/
 data/raw/
-
+results/
 # IDE
 .idea/
 .vscode/
