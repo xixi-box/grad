@@ -1,0 +1,82 @@
+common:
+  trainer_script: simple_trainer_prune_v2.py
+  subcommand: default
+  data_dir: ./data/raw
+  dense_depth_dir: ./data/raw/depths
+  result_root: ./results
+  data_factor: 2
+  refine_stop_iter: 2500
+  max_steps: 5000
+  eval_steps: [5000]
+  save_steps: [5000]
+  ply_steps: [5000]
+  disable_viewer: true
+  disable_video: true
+  disable_tb: true
+  save_eval_images: true
+  prune_step_ratio: 0.7
+  opacity_reg: 0.01
+
+experiments:
+  - name: A1_baseline
+    description: 无深度约束，无剪枝
+    enable_prune: false
+    depth_loss: false
+    extra_args: []
+
+  - name: A2_depth_only
+    description: 有深度约束，无剪枝
+    enable_prune: false
+    depth_loss: true
+    depth_lambda: 0.01
+    extra_args: []
+
+  - name: A3_full_tau060
+    description: 完整方法，tau=0.60
+    enable_prune: true
+    depth_loss: false
+    prune_tau: 0.60
+    prune_lambda_d: 0.5
+    prune_lambda_v: 0.3
+    prune_lambda_n: 0.2
+    extra_args: []
+
+  - name: B1_tau030
+    description: tau=0.30
+    enable_prune: true
+    depth_loss: false
+    prune_tau: 0.30
+    prune_lambda_d: 0.5
+    prune_lambda_v: 0.3
+    prune_lambda_n: 0.2
+    extra_args: []
+
+  - name: B3_tau075
+    description: tau=0.75
+    enable_prune: true
+    depth_loss: false
+    prune_tau: 0.75
+    prune_lambda_d: 0.5
+    prune_lambda_v: 0.3
+    prune_lambda_n: 0.2
+    extra_args: []
+
+  - name: C1_only_D
+    description: 仅 D_i
+    enable_prune: true
+    depth_loss: false
+    prune_tau: 0.60
+    prune_lambda_d: 1.0
+    prune_lambda_v: 0.0
+    prune_lambda_n: 0.0
+    extra_args: []
+
+  - name: C2_DV
+    description: D_i + V_i
+    enable_prune: true
+    depth_loss: false
+    prune_tau: 0.60
+    prune_lambda_d: 0.5
+    prune_lambda_v: 0.5
+    prune_lambda_n: 0.0
+    extra_args: []
